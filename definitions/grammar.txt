@@ -1,0 +1,114 @@
+:= means recursive
+= means not recursive
+
+
+Unit := 
+  ImportDir
+  FunDef
+  StructDef
+  TypeDef
+  VarDef
+  EnumDef
+
+ImportDir =
+  "import" ImportIden ";"
+  "import" path ";"
+
+ImportIden := 
+  Iden from path 
+  Iden "as" Iden from
+  "*" "as" Iden from
+
+FunDef =
+  "fn" Iden (FunParams): TypeExpr BlockExpr
+
+StructDef =
+  "struct" Iden {VarDefs}
+
+VarDefs := 
+  VarDef;
+
+TypeDef = 
+  type Iden = TypeExpr;
+
+EnumDef = 
+  "enum" Iden {EnumValDefs}
+
+EnumValDefs :=
+  EnumVal;
+  ?-> EnumVal
+  
+EnumVal =
+  Iden
+  Iden(EnumValInTypes)
+
+EnumValInTypes :=
+  TypeDef;
+  ?-> TypeDef
+
+Expr :=
+  StmtExpr
+  IfExpr
+  BinOpExpr
+  UnaryOpExpr
+  AssignExpr
+  LiteralExpr
+  EnumExpr
+  IdenDotExpr
+
+StmtExpr:
+  BlockExpr
+  "return" Expr
+  Expr ;
+
+BlockExpr :=
+  StmtExpr
+  ?-> Expr
+
+IfExpr :=
+  "if" Expr BlockExpr
+  "if" Expr BlockExpr
+  "else" "if" Expr BlockExpr
+  "else" BlockExpr
+
+BinOpExpr := 
+  Expr + Expr
+  Expr - Expr
+  Expr * Expr
+  Expr / Expr
+  Expr % Expr
+  Expr | Expr
+  Expr & Expr
+  Expr == Expr
+  Expr <= Expr
+  Expr >= Expr
+  Expr > Expr
+  Expr < Expr
+
+UnaryOpExpr :=
+ !Expr
+ -Expr
+ ~Expr 
+
+AssignExpr :=
+  Iden = Expr
+  Iden += Expr
+  Iden -= Expr
+  Iden *= Expr
+  Iden %= Expr
+  Iden |= Expr
+  Iden &= Expr
+
+LiteralExpr = 
+  StrLit
+  ILit
+  ULit
+  FLit
+  BoolLit
+
+EnumExpr =
+  Iden::Iden
+
+IdenDotExpr =
+  Iden.Iden
+
